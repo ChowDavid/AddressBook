@@ -1,6 +1,15 @@
 # Address Book Application
 
-## Document
-```aidl
-http://localhost:8080/swagger-ui.htmhttp://localhost:8080/swagger-ui.html
+## API Document
+```http
+http://localhost:8080/swagger-ui.html
+```
+## Build
+```mvn
+mvn clean package docker:build
+```
+
+## Run in Docker
+```docker
+docker run -p 8080:8080 -t addressbook
 ```

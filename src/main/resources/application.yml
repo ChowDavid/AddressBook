@@ -1,0 +1,10 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ADDRESS_BOOK_API
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
