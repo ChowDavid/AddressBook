@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.util.Objects;
 
 @Getter @Setter @AllArgsConstructor
-public class AddressBookDto {
+public class ContactDto {
     private String name;
     private String phoneNumber;
 
@@ -16,7 +16,7 @@ public class AddressBookDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AddressBookDto that = (AddressBookDto) o;
+        ContactDto that = (ContactDto) o;
         return name.equals(that.name) && phoneNumber.equals(that.phoneNumber);
     }
 

@@ -1,9 +1,11 @@
 package com.david.addressbook.controller;
 
-import com.david.addressbook.dto.AddressBookDto;
+import com.david.addressbook.dto.ContactDto;
 import com.david.addressbook.entity.AddressBook;
 import com.david.addressbook.exception.RecordNotFoundException;
 import com.david.addressbook.service.AddressBookService;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,30 +18,41 @@ import java.util.Map;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/addressbook")
+@RequestMapping("/addressBook")
 public class AddressBookController {
 
     @Autowired
     private AddressBookService addressBookService;
 
-    @PostMapping("/save/{book}")
-    public AddressBook saveAddressBook(@Valid @RequestBody AddressBookDto dto, @PathVariable("book") String bookName){
-        return addressBookService.saveBook(bookName,dto);
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Input Validation Error")
+    })
+    @PostMapping("/contacts/{book}")
+    public AddressBook saveContact(@Valid @RequestBody ContactDto dto, @PathVariable("book") String bookName){
+        return addressBookService.saveContact(bookName,dto);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteAddressBooKById(@PathVariable("id") Long id){
-        addressBookService.deleteBookById(id);
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Contact not found") })
+    @DeleteMapping("/contacts/{id}")
+    public void deleteContactById(@PathVariable("id") Long id){
+        addressBookService.deleteContactById(id);
     }
 
-    @GetMapping("/printAllContact/{book}")
-    public List<AddressBook> printAllAddressContact(@PathVariable("book") String bookName){
-        return addressBookService.printAllAddressContactsByBook(bookName);
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "No record found from address book")
+    })
+    @GetMapping("/contactReports/{book}")
+    public List<AddressBook> printAllContact(@PathVariable("book") String bookName){
+        return addressBookService.printAllContactsByBook(bookName);
     }
 
-    @GetMapping("/printUniqueAddressContact/")
-    public Set<AddressBookDto> printUniqueAddressContact(){
-        return addressBookService.printUniqueAddress();
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "No record found across all address books")
+    })
+    @GetMapping("/uniqueContacts")
+    public Set<ContactDto> printUniqueContact(){
+        return addressBookService.printUniqueContact();
     }
 
 
@@ -57,7 +70,7 @@ public class AddressBookController {
         return errors;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(RecordNotFoundException.class)
     public Map<String, String> handleRecordNotFoundException(
             RecordNotFoundException ex) {

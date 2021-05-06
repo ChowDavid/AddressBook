@@ -1,6 +1,6 @@
 package com.david.addressbook.service;
 
-import com.david.addressbook.dto.AddressBookDto;
+import com.david.addressbook.dto.ContactDto;
 import com.david.addressbook.entity.AddressBook;
 import com.david.addressbook.exception.RecordNotFoundException;
 import com.david.addressbook.repository.AddressBookRepository;
@@ -19,28 +19,39 @@ public class AddressBookService {
     @Autowired
     private AddressBookRepository addressBookRepository;
 
-    public AddressBook saveBook(String addressBookName,AddressBookDto dto){
-        log.info("saveAddressBook start");
+    public AddressBook saveContact(String addressBookName, ContactDto dto){
+        log.info("saveContact to book {}",addressBookName);
         AddressBook book = new AddressBook(dto,addressBookName);
         return addressBookRepository.save(book);
     }
 
-    public void deleteBookById(Long id) {
-        log.info("deleteBookById {}",id);
+    public void deleteContactById(Long id) {
+        log.info("deleteContactById {}",id);
         try {
             addressBookRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e){
-            log.warn("Address Book Record not found id:{}",id);
-            throw new RecordNotFoundException("Address Book id:"+id + " Record Not found");
+            log.warn("Contact Record not found by id:{}",id);
+            throw new RecordNotFoundException("Contact id:"+id + " Record Not found");
         }
     }
 
-    public List<AddressBook> printAllAddressContactsByBook(String bookName ){
-        log.info("printAllAddressContacts start...");
-        return addressBookRepository.findByBook(bookName);
+    public List<AddressBook> printAllContactsByBook(String bookName){
+        log.info("printAllContactsByBook {}",bookName);
+        List<AddressBook> contacts = addressBookRepository.findByBook(bookName);
+        if (contacts==null || contacts.isEmpty()){
+            log.warn("No Record found from address book {}",bookName);
+            throw new RecordNotFoundException("No Record found from addres book "+bookName);
+        }
+        return contacts;
     }
 
-    public Set<AddressBookDto> printUniqueAddress(){
-        return addressBookRepository.findUnique();
+    public Set<ContactDto> printUniqueContact(){
+        log.info("printUniqueContact");
+        Set<ContactDto> dtos = addressBookRepository.findUnique();
+        if (dtos==null || dtos.isEmpty()){
+            log.warn("No Record found from Address book");
+            throw new RecordNotFoundException("No Record found from Address book");
+        }
+        return dtos;
     }
 }

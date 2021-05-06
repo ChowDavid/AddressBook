@@ -1,6 +1,6 @@
 package com.david.addressbook.repository;
 
-import com.david.addressbook.dto.AddressBookDto;
+import com.david.addressbook.dto.ContactDto;
 import com.david.addressbook.entity.AddressBook;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,6 +14,6 @@ public interface AddressBookRepository  extends JpaRepository<AddressBook,Long> 
 
     List<AddressBook> findByBook(String bookName);
 
-    @Query(value ="select distinct new com.david.addressbook.dto.AddressBookDto(a.name,a.phoneNumber) from AddressBook a")
-    Set<AddressBookDto> findUnique();
+    @Query(value ="select distinct new com.david.addressbook.dto.ContactDto(a.name,a.phoneNumber) from AddressBook a")
+    Set<ContactDto> findUnique();
 }

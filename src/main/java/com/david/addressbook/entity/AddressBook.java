@@ -1,6 +1,6 @@
 package com.david.addressbook.entity;
 
-import com.david.addressbook.dto.AddressBookDto;
+import com.david.addressbook.dto.ContactDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
@@ -23,7 +23,7 @@ public class AddressBook {
     @Size(max = 50, message = "Phone number - Max Length cannot longer than 50 characters")
     private String phoneNumber;
 
-    public AddressBook(AddressBookDto dto, String addressBookName){
+    public AddressBook(ContactDto dto, String addressBookName){
         this.book = addressBookName;
         this.name = dto.getName();
         this.phoneNumber = dto.getPhoneNumber();
