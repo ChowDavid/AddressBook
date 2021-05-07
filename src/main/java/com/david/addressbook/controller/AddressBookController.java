@@ -34,7 +34,8 @@ public class AddressBookController {
 
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Contact not found") })
-    @DeleteMapping("/contacts/{id}")
+    @DeleteMapping(value = "/contacts/{id}")
+    @ResponseStatus( HttpStatus.NO_CONTENT )
     public void deleteContactById(@PathVariable("id") Long id){
         addressBookService.deleteContactById(id);
     }
