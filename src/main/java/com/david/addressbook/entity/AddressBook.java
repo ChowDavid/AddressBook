@@ -19,7 +19,7 @@ public class AddressBook {
     @NotEmpty(message = "Please provide the name")
     @Size(max = 50, message = "Name - Max Length cannot longer than 50 characters")
     private String name;
-    @NotNull(message = "Please provide the phone number")
+    @NotEmpty(message = "Please provide the phone number")
     @Size(max = 50, message = "Phone number - Max Length cannot longer than 50 characters")
     private String phoneNumber;
 
