@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
@@ -54,6 +55,11 @@ class AddressBookRepositoryTest {
         Assertions.assertTrue(addressBookRepository.findById(1L).isPresent());
         addressBookRepository.deleteById(1L);
         Assertions.assertFalse(addressBookRepository.findById(1L).isPresent());
+    }
+
+    @Test
+    public void deleteById_Empty(){
+        Assertions.assertThrows(EmptyResultDataAccessException.class, ()-> addressBookRepository.deleteById(1L));
     }
 
 
