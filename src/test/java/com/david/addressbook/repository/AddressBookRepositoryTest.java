@@ -1,6 +1,5 @@
 package com.david.addressbook.repository;
 
-import com.david.addressbook.dto.ContactDto;
 import com.david.addressbook.entity.AddressBook;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -10,8 +9,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @DataJpaTest
@@ -27,25 +27,18 @@ class AddressBookRepositoryTest {
         AddressBook book = new AddressBook();
         book.setBook("Book");
         book.setName("name");
-        book.setPhoneNumber("phone");
+        book.setPhoneNumbers(new HashSet<>(Arrays.asList("phone")));
         AddressBook storebook = addressBookRepository.save(book);
         Assertions.assertNotNull(storebook.getId());
         Assertions.assertEquals("Book",storebook.getBook());
         Assertions.assertEquals("name",storebook.getName());
-        Assertions.assertEquals("phone",storebook.getPhoneNumber());
+        Assertions.assertEquals("phone",storebook.getPhoneNumbers().toArray()[0]);
     }
 
     @Test
     @Sql({"test_clear_data.sql","test_data.sql"})
     public void findByBook(){
         List<AddressBook> contacts = addressBookRepository.findByBook("NORMAL");
-        Assertions.assertEquals(4,contacts.size());
-    }
-
-    @Test
-    @Sql({"test_clear_data.sql","test_data.sql"})
-    public void findUnique(){
-        Set<ContactDto> contacts = addressBookRepository.findUnique();
         Assertions.assertEquals(4,contacts.size());
     }
 

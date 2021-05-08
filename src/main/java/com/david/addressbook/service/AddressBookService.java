@@ -1,6 +1,7 @@
 package com.david.addressbook.service;
 
 import com.david.addressbook.dto.ContactDto;
+import com.david.addressbook.dto.SimpleContactDto;
 import com.david.addressbook.entity.AddressBook;
 import com.david.addressbook.exception.RecordNotFoundException;
 import com.david.addressbook.repository.AddressBookRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -50,9 +52,12 @@ public class AddressBookService {
         return contacts;
     }
 
-    public Set<ContactDto> printUniqueContact(){
+    public Set<SimpleContactDto> printUniqueContact(){
         log.info("printUniqueContact");
-        Set<ContactDto> dtos = addressBookRepository.findUnique();
+        Set<SimpleContactDto> dtos = addressBookRepository.findAll().stream().
+                flatMap(ab->ab.getPhoneNumbers().stream()
+                        .map(phone->new SimpleContactDto(ab.getName(),phone)))
+                .collect(Collectors.toSet());
         if (dtos==null || dtos.isEmpty()){
             log.warn("No Record found from Address book");
             throw new RecordNotFoundException("No Record found from Address book");

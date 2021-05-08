@@ -2,6 +2,7 @@ package com.david.addressbook.controller;
 
 
 import com.david.addressbook.dto.ContactDto;
+import com.david.addressbook.dto.SimpleContactDto;
 import com.david.addressbook.entity.AddressBook;
 import com.david.addressbook.exception.RecordNotFoundException;
 import com.david.addressbook.service.AddressBookService;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import javax.validation.*;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
@@ -48,7 +50,7 @@ public class AddressBookControllerTest {
         addressBook.setId(1L);
         addressBook.setBook("NORMAL");
         addressBook.setName("David");
-        addressBook.setPhoneNumber("123456");
+        addressBook.setPhoneNumbers(new HashSet<>(Arrays.asList("123456")));
         when(addressBookService.saveContact(anyString(),any(ContactDto.class))).thenReturn(addressBook);
         mvc.perform(MockMvcRequestBuilders.post("/addressBook/contacts/BUSINESS")
                 .content("{\n" +
@@ -63,7 +65,7 @@ public class AddressBookControllerTest {
                         "  \"id\": 1,\n" +
                         "  \"book\": \"NORMAL\",\n" +
                         "  \"name\": \"David\",\n" +
-                        "  \"phoneNumber\": \"123456\"\n" +
+                        "  \"phoneNumbers\": [\"123456\"]\n" +
                         "}"));
         verify(addressBookService,times(1)).saveContact(bookCaptor.capture(),any(ContactDto.class));
         Assertions.assertEquals("BUSINESS",bookCaptor.getValue());
@@ -75,14 +77,14 @@ public class AddressBookControllerTest {
         when(addressBookService.saveContact(anyString(),any(ContactDto.class))).thenThrow(ex);
         mvc.perform(MockMvcRequestBuilders.post("/addressBook/contacts/BUSINESS")
                 .content("{\n" +
-                        "  \"name\": \"david\",\n" +
-                        "  \"phoneNumber\": \"123456\"\n" +
+                        //"  \"name\": \"david\",\n" +
+                        //"  \"phoneNumber\": \"123456\"\n" +
                         "}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(content().json("{\"phoneNumber\":\"Please provide the phone number\",\"name\":\"Please provide the name\"}"));
+                .andExpect(content().json("{\"phoneNumbers\":\"Please provide the phone numbers\",\"name\":\"Please provide the name\"}"));
         verify(addressBookService,times(1)).saveContact(bookCaptor.capture(),any(ContactDto.class));
         Assertions.assertEquals("BUSINESS",bookCaptor.getValue());
     }
@@ -142,13 +144,13 @@ public class AddressBookControllerTest {
         book.setId(1L);
         book.setBook("NORMAL");
         book.setName("david");
-        book.setPhoneNumber("123456");
+        book.setPhoneNumbers(new HashSet<>(Arrays.asList("123456")));
         when(addressBookService.printAllContactsByBook(anyString())).thenReturn(Arrays.asList(book));
         mvc.perform(MockMvcRequestBuilders.get("/addressBook/contactReports/NORMAL")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"id\":1,\"book\":\"NORMAL\",\"name\":\"david\",\"phoneNumber\":\"123456\"}]"));
+                .andExpect(content().json("[{\"id\":1,\"book\":\"NORMAL\",\"name\":\"david\",\"phoneNumbers\":[\"123456\"]}]"));
         verify(addressBookService,times(1)).printAllContactsByBook(bookCaptor.capture());
         Assertions.assertEquals("NORMAL",bookCaptor.getValue());
     }
@@ -158,7 +160,7 @@ public class AddressBookControllerTest {
         book.setId(1L);
         book.setBook("NORMAL");
         book.setName("david");
-        book.setPhoneNumber("123456");
+        book.setPhoneNumbers(new HashSet<>(Arrays.asList("123456")));
         when(addressBookService.printAllContactsByBook(anyString())).thenReturn(Arrays.asList(book,book));
         mvc.perform(MockMvcRequestBuilders.get("/addressBook/contactReports/NORMAL")
                 .accept(MediaType.APPLICATION_JSON))
@@ -169,13 +171,13 @@ public class AddressBookControllerTest {
                         "    \"id\": 1,\n" +
                         "    \"book\": \"NORMAL\",\n" +
                         "    \"name\": \"david\",\n" +
-                        "    \"phoneNumber\": \"123456\"\n" +
+                        "    \"phoneNumbers\": [\"123456\"]\n" +
                         "  },\n" +
                         "  {\n" +
                         "    \"id\": 1,\n" +
                         "    \"book\": \"NORMAL\",\n" +
                         "    \"name\": \"david\",\n" +
-                        "    \"phoneNumber\": \"123456\"\n" +
+                        "    \"phoneNumbers\": [\"123456\"]\n" +
                         "  }\n" +
                         "]"));
         verify(addressBookService,times(1)).printAllContactsByBook(bookCaptor.capture());
@@ -208,7 +210,7 @@ public class AddressBookControllerTest {
 
     @Test
     public void printUniqueContact_happy() throws Exception {
-        ContactDto book = new ContactDto("david","123456");
+        SimpleContactDto book = new SimpleContactDto("david","123456");
         when(addressBookService.printUniqueContact()).thenReturn(Sets.newSet(book));
         mvc.perform(MockMvcRequestBuilders.get("/addressBook/uniqueContacts")
                 .accept(MediaType.APPLICATION_JSON))

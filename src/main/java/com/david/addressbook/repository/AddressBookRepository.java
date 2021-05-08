@@ -14,6 +14,4 @@ public interface AddressBookRepository  extends JpaRepository<AddressBook,Long> 
 
     List<AddressBook> findByBook(String bookName);
 
-    @Query(value ="select distinct new com.david.addressbook.dto.ContactDto(a.name,a.phoneNumber) from AddressBook a")
-    Set<ContactDto> findUnique();
 }

@@ -21,6 +21,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
         ex.getConstraintViolations().forEach(error -> {
             String fieldName = error.getPropertyPath().toString();
             String errorMessage = error.getMessage();
+            fieldName=fieldName.equals("phoneNumbers[].<iterable element>")?"phoneNumbers":fieldName;
             errors.put(fieldName, errorMessage);
         });
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);

@@ -10,13 +10,13 @@ public class SaveContactIT extends RestfulBase {
 
 
     @Test
-    @Sql("test_clear_data.sql")
+    @Sql("test_clear_data_it.sql")
     public void saveContact() throws JSONException {
         String inputJson ="{\n" +
                 "  \"name\": \"david\",\n" +
-                "  \"phoneNumber\": \"123\"\n" +
+                "  \"phoneNumbers\": [\"123\"]\n" +
                 "}";
-        String expected = "{\"id\":1,\"book\":\"NORMAL\",\"name\":\"david\",\"phoneNumber\":\"123\"}";
+        String expected = "{\"id\":1,\"book\":\"NORMAL\",\"name\":\"david\",\"phoneNumbers\":[\"123\"]}";
         assertRestful(HttpMethod.POST,"/addressBook/contacts/NORMAL",inputJson,expected,200);
 
     }
@@ -24,7 +24,7 @@ public class SaveContactIT extends RestfulBase {
     public void saveContact_nameEmpty() throws JSONException {
         String inputJson ="{\n" +
                 "  \"name\": \"\",\n" +
-                "  \"phoneNumber\": \"123\"\n" +
+                "  \"phoneNumbers\": [\"123\"]\n" +
                 "}";
         String expected = "{\"name\":\"Please provide the name\"}";
         assertRestful(HttpMethod.POST,"/addressBook/contacts/NORMAL",inputJson,expected,400);
@@ -32,7 +32,7 @@ public class SaveContactIT extends RestfulBase {
     @Test
     public void saveContact_nameEmpty2() throws JSONException {
         String inputJson ="{\n" +
-                "  \"phoneNumber\": \"123\"\n" +
+                "  \"phoneNumbers\": [\"123\"]\n" +
                 "}";
         String expected = "{\"name\":\"Please provide the name\"}";
         assertRestful(HttpMethod.POST,"/addressBook/contacts/NORMAL",inputJson,expected,400);
@@ -41,7 +41,7 @@ public class SaveContactIT extends RestfulBase {
     public void saveContact_nameTooLong() throws JSONException {
         String inputJson ="{\n" +
                 "  \"name\": \""+ StringUtils.repeat("a", 51)+"\",\n" +
-                "  \"phoneNumber\": \"123\"\n" +
+                "  \"phoneNumbers\": [\"123\"]\n" +
                 "}";
         String expected = "{\"name\":\"Name - Max Length cannot longer than 50 characters\"}";
         assertRestful(HttpMethod.POST,"/addressBook/contacts/NORMAL",inputJson,expected,400);
@@ -49,7 +49,7 @@ public class SaveContactIT extends RestfulBase {
     @Test
     public void saveContact_nameMissing() throws JSONException {
         String inputJson ="{\n" +
-                "  \"phoneNumber\": \"123\"\n" +
+                "  \"phoneNumbers\": [\"123\"]\n" +
                 "}";
         String expected = "{\"name\":\"Please provide the name\"}";
         assertRestful(HttpMethod.POST,"/addressBook/contacts/NORMAL",inputJson,expected,400);
@@ -58,7 +58,7 @@ public class SaveContactIT extends RestfulBase {
     public void saveContact_bookTooLong() throws JSONException {
         String inputJson ="{\n" +
                 "  \"name\": \"david\",\n" +
-                "  \"phoneNumber\": \"123\"\n" +
+                "  \"phoneNumbers\": [\"123\"]\n" +
                 "}";
         String expected = "{\"book\":\"Address book name Cannot longer than 10 characters\"}";
         assertRestful(HttpMethod.POST,"/addressBook/contacts/"+StringUtils.repeat("A",11),inputJson,expected,400);
@@ -69,7 +69,7 @@ public class SaveContactIT extends RestfulBase {
         String inputJson ="{\n" +
                 "  \"name\": \"david\"\n" +
                 "}";
-        String expected = "{\"phoneNumber\":\"Please provide the phone number\"}";
+        String expected = "{\"phoneNumbers\":\"Please provide the phone numbers\"}";
         assertRestful(HttpMethod.POST,"/addressBook/contacts/NORMAL",inputJson,expected,400);
     }
     @Test
@@ -78,7 +78,7 @@ public class SaveContactIT extends RestfulBase {
                 "  \"name\": \"david\",\n" +
                 "  \"phoneNumber\": \"\"\n" +
                 "}";
-        String expected = "{\"phoneNumber\":\"Please provide the phone number\"}";
+        String expected = "{\"phoneNumbers\":\"Please provide the phone numbers\"}";
         assertRestful(HttpMethod.POST,"/addressBook/contacts/NORMAL",inputJson,expected,400);
     }
 
@@ -86,9 +86,9 @@ public class SaveContactIT extends RestfulBase {
     public void saveContact_phoneTooLong() throws JSONException {
         String inputJson ="{\n" +
                 "  \"name\": \"david\",\n" +
-                "  \"phoneNumber\": \""+StringUtils.repeat("A",51)+"\"\n" +
+                "  \"phoneNumbers\": [\""+StringUtils.repeat("A",51)+"\"]\n" +
                 "}";
-        String expected = "{\"phoneNumber\":\"Phone number - Max Length cannot longer than 50 characters\"}";
+        String expected = "{\"phoneNumbers\":\"Phone number - Max Length cannot longer than 50 characters\"}";
         assertRestful(HttpMethod.POST,"/addressBook/contacts/NORMAL",inputJson,expected,400);
     }
 

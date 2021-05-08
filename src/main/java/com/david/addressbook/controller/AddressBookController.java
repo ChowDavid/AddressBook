@@ -1,6 +1,7 @@
 package com.david.addressbook.controller;
 
 import com.david.addressbook.dto.ContactDto;
+import com.david.addressbook.dto.SimpleContactDto;
 import com.david.addressbook.entity.AddressBook;
 import com.david.addressbook.service.AddressBookService;
 import io.swagger.annotations.ApiResponse;
@@ -61,7 +62,7 @@ public class AddressBookController {
      */
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No record found across all address books")})
     @GetMapping("/uniqueContacts")
-    public Set<ContactDto> printUniqueContact(){
+    public Set<SimpleContactDto> printUniqueContact(){
         return addressBookService.printUniqueContact();
     }
 

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -41,15 +42,15 @@ class AddressBookServiceTest {
     public void saveContact_null(){
         Assertions.assertThrows(NullPointerException.class, () -> addressBookService.saveContact(null,null));
         Assertions.assertThrows(NullPointerException.class, () -> addressBookService.saveContact("name",null));
-        Assertions.assertThrows(NullPointerException.class, () -> addressBookService.saveContact(null,new ContactDto(null,null)));
+        Assertions.assertThrows(NullPointerException.class, () -> addressBookService.saveContact(null,new ContactDto(null, Arrays.asList("12345"))));
     }
     @Test
     public void saveContact(){
-        addressBookService.saveContact("book",new ContactDto("david","123456"));
+        addressBookService.saveContact("book",new ContactDto("david",Arrays.asList("123456")));
         verify(addressBookRepository,times(1)).save(addressBookArgumentCaptor.capture());
         Assertions.assertEquals("book",addressBookArgumentCaptor.getValue().getBook());
         Assertions.assertEquals("david",addressBookArgumentCaptor.getValue().getName());
-        Assertions.assertEquals("123456",addressBookArgumentCaptor.getValue().getPhoneNumber());
+        Assertions.assertEquals("[123456]",addressBookArgumentCaptor.getValue().getPhoneNumbers().toString());
     }
 
     @Test
@@ -99,24 +100,16 @@ class AddressBookServiceTest {
         Assertions.assertEquals("any",stringArgumentCaptor.getValue());
     }
 
-    @Test
-    public void printUniqueContact_success(){
-        Set set = mock(Set.class);
-        when(set.isEmpty()).thenReturn(false);
-        when(addressBookRepository.findUnique()).thenReturn(set);
 
-        Assertions.assertEquals(set,addressBookService.printUniqueContact());
-        verify(addressBookRepository,times(1)).findUnique();
-    }
 
     @Test
     public void printUniqueContact_noRecord(){
-        Set set = mock(Set.class);
-        when(set.isEmpty()).thenReturn(true);
-        when(addressBookRepository.findUnique()).thenReturn(set);
+        List list = mock(List.class);
+        when(list.isEmpty()).thenReturn(true);
+        when(addressBookRepository.findAll()).thenReturn(list);
 
         Assertions.assertThrows(RecordNotFoundException.class, () -> addressBookService.printUniqueContact());
-        verify(addressBookRepository,times(1)).findUnique();
+        verify(addressBookRepository,times(1)).findAll();
     }
 
 
