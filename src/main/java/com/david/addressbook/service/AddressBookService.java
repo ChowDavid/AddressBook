@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -21,12 +22,15 @@ public class AddressBookService {
 
     public AddressBook saveContact(String addressBookName, ContactDto dto){
         log.info("saveContact to book {}",addressBookName);
+        Objects.requireNonNull(addressBookName,"address book name");
+        Objects.requireNonNull(dto, "ContactDto should be provided");
         AddressBook book = new AddressBook(dto,addressBookName);
         return addressBookRepository.save(book);
     }
 
     public void deleteContactById(Long id) {
         log.info("deleteContactById {}",id);
+        Objects.requireNonNull(id, "contact id should be provided");
         try {
             addressBookRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e){
@@ -37,6 +41,7 @@ public class AddressBookService {
 
     public List<AddressBook> printAllContactsByBook(String bookName){
         log.info("printAllContactsByBook {}",bookName);
+        Objects.requireNonNull(bookName, "address book name not provided");
         List<AddressBook> contacts = addressBookRepository.findByBook(bookName);
         if (contacts==null || contacts.isEmpty()){
             log.warn("No Record found from address book {}",bookName);
